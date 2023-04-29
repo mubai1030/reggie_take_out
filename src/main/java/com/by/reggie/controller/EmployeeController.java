@@ -25,7 +25,8 @@ public class EmployeeController {
 
     /*登录方法*/
     @PostMapping("/login")
-    public R<Employee> login(HttpServletRequest request, @RequestBody Employee employee){
+    public R<Employee> login(HttpServletRequest request,
+                             @RequestBody Employee employee){
         /**
          * 处理逻辑如下：
          * ①. 将页面提交的密码password进行md5加密处理, 得到加密后的字符串
@@ -39,7 +40,9 @@ public class EmployeeController {
         String password = employee.getPassword();
         password = DigestUtils.md5DigestAsHex(password.getBytes());
 //        ②. 根据页面提交的用户名username查询数据库中员工数据信息
+        //包装一个查询对象
         LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
+        //等值查询
         queryWrapper.eq(Employee::getUsername,employee.getUsername());
         Employee emp = employeeService.getOne(queryWrapper);
 //        ③. 如果没有查询到, 则返回登录失败结果
