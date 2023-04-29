@@ -29,7 +29,22 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    /*禁用*/
+    /**
+     * 根据id查询员工信息
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    public R<Employee> getById(@PathVariable Long id){
+        log.info("根据id查询员工信息...");
+        Employee employee = employeeService.getById(id);
+        if(employee != null){
+            return R.success(employee);
+        }
+        return R.error("没有查询到对应员工信息");
+    }
+
+    /*启用/禁用*/
     @PutMapping
     public R<String> update(HttpServletRequest request,
                             @RequestBody Employee employee){
