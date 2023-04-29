@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.naming.Name;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -27,6 +28,23 @@ public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
+
+    /*禁用*/
+    @PutMapping
+    public R<String> update(HttpServletRequest request,
+                            @RequestBody Employee employee){
+        log.info("employee{}" + employee.toString());
+
+        //获取设置更新的管理员Id[这里的id会丢失精度，引入JacksonObjectMapper]
+        Long setUpdateUserId= (Long)request.getSession().getAttribute("employee");
+        log.info("empId = " + setUpdateUserId);
+
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(setUpdateUserId);
+        employeeService.updateById(employee);
+
+        return R.success("更新成功");
+    }
 
     /*分页*/
     @GetMapping("/page")
