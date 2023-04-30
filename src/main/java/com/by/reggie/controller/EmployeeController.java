@@ -69,7 +69,7 @@ public class EmployeeController {
         log.info("page = {},pageSize = {},name = {}",page,pageSize,name);
 
         //构造分页构造器
-        Page pageInfo = new Page(page, pageSize);
+        Page<Employee> pageInfo = new Page<>(page, pageSize);
 
         //构造条件构造器
         LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper();
@@ -89,12 +89,13 @@ public class EmployeeController {
     @PostMapping
     public R<String> save(HttpServletRequest request,
                           @RequestBody Employee employee){
+
         log.info("新增员工，员工信息：{}",employee.toString());
         //设置初始密码123456，需要进行md5加密处理
         employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
 
-        long id = Thread.currentThread().getId();
-        log.info("线程id为：{}",id);
+        /*long id = Thread.currentThread().getId();
+        log.info("线程id为：{}",id);*/
 
         //公共字段，这里注释了，统一在MetaObjectHandler处理
        /* employee.setCreateTime(LocalDateTime.now());//创建时间

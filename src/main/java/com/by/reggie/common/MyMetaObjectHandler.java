@@ -23,6 +23,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         log.info(metaObject.toString());
         metaObject.setValue("createTime", LocalDateTime.now());
         metaObject.setValue("updateTime", LocalDateTime.now());
+
         //通过BaseContext获取当前登录用户的id【过滤器中设置完，传过来的】
         Long empId = BaseContext.getCurrentId();
         metaObject.setValue("createUser", empId);
@@ -40,6 +41,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         log.info("线程id为：{}",id);*/
 
         metaObject.setValue("updateTime", LocalDateTime.now());
+
         //通过BaseContext获取当前登录用户的id【过滤器中设置完，传过来的】
         Long empId = BaseContext.getCurrentId();
         metaObject.setValue("updateUser", empId);
