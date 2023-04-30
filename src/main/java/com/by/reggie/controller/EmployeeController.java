@@ -50,12 +50,14 @@ public class EmployeeController {
                             @RequestBody Employee employee){
         log.info("employee{}" + employee.toString());
 
+        //公共字段统一处理
+        /*
         //获取设置更新的管理员Id[这里的id会丢失精度，引入JacksonObjectMapper]
         Long setUpdateUserId= (Long)request.getSession().getAttribute("employee");
         log.info("empId = " + setUpdateUserId);
 
         employee.setUpdateTime(LocalDateTime.now());
-        employee.setUpdateUser(setUpdateUserId);
+        employee.setUpdateUser(setUpdateUserId);*/
         employeeService.updateById(employee);
 
         return R.success("更新成功");
@@ -91,13 +93,17 @@ public class EmployeeController {
         //设置初始密码123456，需要进行md5加密处理
         employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
 
-        employee.setCreateTime(LocalDateTime.now());//创建时间
+        long id = Thread.currentThread().getId();
+        log.info("线程id为：{}",id);
+
+        //公共字段，这里注释了，统一在MetaObjectHandler处理
+       /* employee.setCreateTime(LocalDateTime.now());//创建时间
         employee.setUpdateTime(LocalDateTime.now());//更新时间
 
         //获取当前登录用户的id
         Long  empId = (Long) request.getSession().getAttribute("employee");
         employee.setCreateUser(empId);//创建人
-        employee.setUpdateUser(empId);//更新人
+        employee.setUpdateUser(empId);//更新人*/
 
         employeeService.save(employee);
         return R.success("新增员工成功");

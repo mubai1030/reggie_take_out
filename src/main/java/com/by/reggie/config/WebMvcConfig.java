@@ -30,7 +30,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
     }
 
     /**
-     * 扩展mvc框架的消息转换器
+     * 扩展mvc框架的消息转换器【这里用于解决获取id损失精度的问题】
      * @param converters
      */
     @Override
