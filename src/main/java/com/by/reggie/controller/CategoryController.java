@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author xiaobai
@@ -23,6 +24,18 @@ import javax.servlet.http.HttpServletRequest;
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
+
+    @GetMapping("/list")
+    public R<List<Category>> list(Category category){
+        //条件构造器
+        LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
+        //添加条件
+        queryWrapper.eq(category.getType()!=null,Category::getType,category.getType());
+        //添加排序
+        queryWrapper.orderByAsc(Category::getSort).orderByDesc(Category::getCreateTime);
+        List<Category> list = categoryService.list(queryWrapper);
+        return R.success(list);
+    }
 
     /*修改*/
     @PutMapping

@@ -36,10 +36,17 @@ public class CommonController {
     public R<String> upload(MultipartFile file){
         //file是一个临时文件，需要转存到指定位置，否则本次请求完成后，临时文件会删除
         log.info(file.toString());
-        //获取原始文件名
+       /* //获取原始文件名
         String originalFilename = file.getOriginalFilename();
         //使用UUID重新生成文件名，防止文件名称重复造成文件覆盖
         String fileName = UUID.randomUUID().toString() + originalFilename;
+*/
+        //原始文件名
+        String originalFilename = file.getOriginalFilename();//abc.jpg
+        String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
+
+        //使用UUID重新生成文件名，防止文件名称重复造成文件覆盖
+        String fileName = UUID.randomUUID().toString() + suffix;//dfsdfdfd.jpg
 
         //创建一个目录对象
         File dir = new File(basePath);
