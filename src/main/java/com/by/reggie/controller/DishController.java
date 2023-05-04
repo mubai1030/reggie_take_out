@@ -39,7 +39,21 @@ public class DishController {
     @Autowired
     private CategoryService categoryService;
 
-    /*(批量)起售/停售*/
+    @GetMapping("/list")
+    private R<List<Dish>> list(Long categoryId){
+        //条件构造器
+        LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+        //添加过滤条件
+        queryWrapper.eq(categoryId != null,Dish::getCategoryId,categoryId);
+        //只查找在售的
+        queryWrapper.eq(Dish::getStatus,1).eq(Dish::getIsDeleted,0);
+        //排序
+        queryWrapper.orderByAsc(Dish::getSort).orderByDesc(Dish::getCreateTime);
+        List<Dish> list = dishService.list(queryWrapper);
+        return R.success(list);
+    }
+
+    /*(批量)删除*/
     @DeleteMapping
     private R<String> delete(@RequestParam List<Long> ids){
         dishService.deleteByIds(ids);

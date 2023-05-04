@@ -1,9 +1,6 @@
 package com.by.reggie.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -52,6 +49,7 @@ public class Dish implements Serializable {
     private Integer sort;
 
     //逻辑删除
+    @TableLogic
     private Integer isDeleted;
 
 
