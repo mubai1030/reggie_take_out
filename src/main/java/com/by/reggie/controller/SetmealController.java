@@ -34,6 +34,17 @@ public class SetmealController {
     @Autowired
     private CategoryService categoryService;
 
+    @GetMapping("/list")
+    public R<List<Setmeal>> list(Long categoryId,Integer status){
+        LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(categoryId != null,Setmeal::getCategoryId,categoryId);
+        queryWrapper.eq(status != null,Setmeal::getStatus,status);
+        queryWrapper.orderByDesc(Setmeal::getUpdateTime);
+
+        List<Setmeal> list = setmealService.list(queryWrapper);
+        return R.success(list);
+    }
+
     /*(批量)删除*/
     @DeleteMapping
     public R<String> delete(@RequestParam List<Long> ids){

@@ -40,6 +40,51 @@ public class DishController {
     private CategoryService categoryService;
 
     @GetMapping("/list")
+    private R<List<DishDto>> list(Dish dish){
+        //条件构造器
+        LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+        //添加过滤条件
+        queryWrapper.eq(dish.getCategoryId() != null,Dish::getCategoryId,dish.getCategoryId());
+        //只查找在售的
+        queryWrapper.eq(Dish::getStatus,1).eq(Dish::getIsDeleted,0);
+        //排序
+        queryWrapper.orderByAsc(Dish::getSort).orderByDesc(Dish::getCreateTime);
+        List<Dish> list = dishService.list(queryWrapper);
+
+
+        List<DishDto> dishDtoList = list.stream().map((item) -> {
+            DishDto dishDto = new DishDto();
+
+            //item的普通属性，拷贝到dishDto
+            BeanUtils.copyProperties(item, dishDto);
+
+            Long categoryId = item.getCategoryId();//每个菜品所对应的分类ID
+            //根据id查询分类对象
+            Category category = categoryService.getById(categoryId);
+
+            if (category != null){
+                //获取分类名称
+                String categoryName = category.getName();
+                //在dishDto中设置分类名称
+                dishDto.setCategoryName(categoryName);
+            }
+
+            //当前菜品的id
+            Long dishId = item.getId();
+            LambdaQueryWrapper<DishFlavor> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+            lambdaQueryWrapper.eq(DishFlavor::getDishId,dishId);
+            //SQL:select * from dish_flavor where dish_id = ?
+            List<DishFlavor> dishFlavorList = dishFlavorService.list(lambdaQueryWrapper);
+            dishDto.setFlavors(dishFlavorList);
+            return dishDto;
+
+        }).collect(Collectors.toList());
+
+
+        return R.success(dishDtoList);
+    }
+
+/*    @GetMapping("/list")
     private R<List<Dish>> list(Long categoryId){
         //条件构造器
         LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
@@ -51,7 +96,7 @@ public class DishController {
         queryWrapper.orderByAsc(Dish::getSort).orderByDesc(Dish::getCreateTime);
         List<Dish> list = dishService.list(queryWrapper);
         return R.success(list);
-    }
+    }*/
 
     /*(批量)删除*/
     @DeleteMapping
@@ -127,10 +172,13 @@ public class DishController {
             Long categoryId = item.getCategoryId();//每个菜品所对应的分类ID
             //根据id查询分类对象
             Category category = categoryService.getById(categoryId);
-            //获取分类名称
-            String categoryName = category.getName();
-            //在dishDto中设置分类名称
-            dishDto.setCategoryName(categoryName);
+
+            if (category != null){
+                //获取分类名称
+                String categoryName = category.getName();
+                //在dishDto中设置分类名称
+                dishDto.setCategoryName(categoryName);
+            }
             return dishDto;
 
         }).collect(Collectors.toList());
