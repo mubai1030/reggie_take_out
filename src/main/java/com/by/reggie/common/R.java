@@ -1,11 +1,13 @@
 package com.by.reggie.common;
 
 import lombok.Data;
+
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 //通用结果类，服务端响应的所有结果最终都会包装成此类型返回给前端页面
 @Data
-public class R<T> {
+public class R<T> implements Serializable {
 
     /*这些属性实际就是对应的登录界面，数据的判断信息*/
     private Integer code; //编码：1成功，0和其它数字为失败
